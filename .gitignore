@@ -1,0 +1,28 @@
+# Ambiente virtual Python
+backend/.venv/
+venv/
+.venv/
+
+# Cache do Python
+__pycache__/
+*.py[cod]
+
+# Cache e relatórios do pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Variáveis de ambiente e senhas
+.env
+.env.*
+!.env.example
+
+# Configurações do VS Code
+.vscode/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
