@@ -1,5 +1,7 @@
-
 from pydantic import BaseModel
+from sqlalchemy import Column, Integer, String, Boolean
+
+from app.database import Base
 
 
 class TarefaCreate(BaseModel):
@@ -10,3 +12,13 @@ class TarefaCreate(BaseModel):
 class TarefaUpdate(BaseModel):
     titulo: str
     descricao: str | None = None
+
+
+
+class Tarefa(Base):
+    __tablename__ = "tarefas"
+
+    id = Column(Integer, primary_key=True, index=True)
+    titulo = Column(String, nullable=False)
+    descricao = Column(String, nullable=True)
+    concluida = Column(Boolean, default=False)

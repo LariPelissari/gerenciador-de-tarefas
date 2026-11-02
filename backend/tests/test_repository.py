@@ -5,7 +5,16 @@ from app.repositories import tarefas as repository
 
 @pytest.fixture(autouse=True)
 def limpar_tarefas():
-    repository.tarefas.clear()
+    from app.database import SessionLocal
+    from app.models import Tarefa
+
+    db = SessionLocal()
+
+    try:
+        db.query(Tarefa).delete()
+        db.commit()
+    finally:
+        db.close()
 
 def test_criar_tarefa():
     tarefa = TarefaCreate(
@@ -15,10 +24,10 @@ def test_criar_tarefa():
 
     resultado = repository.criar_tarefa(tarefa)
 
-    assert resultado["id"] == 1
-    assert resultado["titulo"] == "Estudar Python"
-    assert resultado["descricao"] == "Praticar testes unitários"
-    assert resultado["concluida"] is False
+    assert resultado.id == 1
+    assert resultado.titulo == "Estudar Python"
+    assert resultado.descricao == "Praticar testes unitários"
+    assert resultado.concluida is False
 
 def test_listar_tarefas():
     tarefa1 = TarefaCreate(
@@ -37,8 +46,8 @@ def test_listar_tarefas():
     resultado = repository.listar_tarefas()
 
     assert len(resultado) == 2
-    assert resultado[0]["titulo"] == "Estudar Python"
-    assert resultado[1]["titulo"] == "Estudar FastAPI"
+    assert resultado[0].titulo == "Estudar Python"
+    assert resultado[1].titulo == "Estudar FastAPI"
 
 def test_buscar_tarefa():
     tarefa = TarefaCreate(
@@ -48,11 +57,11 @@ def test_buscar_tarefa():
 
     tarefa_criada = repository.criar_tarefa(tarefa)
 
-    resultado = repository.buscar_tarefa(tarefa_criada["id"])
+    resultado = repository.buscar_tarefa(tarefa_criada.id)
 
     assert resultado is not None
-    assert resultado["id"] == tarefa_criada["id"]
-    assert resultado["titulo"] == "Estudar FastAPI"
+    assert resultado.id == tarefa_criada.id
+    assert resultado.titulo == "Estudar FastAPI"
 
 def test_buscar_tarefa_inexistente():
     resultado = repository.buscar_tarefa(999)
@@ -73,14 +82,14 @@ def test_atualizar_tarefa():
     )
 
     resultado = repository.atualizar_tarefa(
-        tarefa_criada["id"],
-        tarefa_atualizada
+    tarefa_criada.id,
+    tarefa_atualizada
     )
 
-    assert resultado["id"] == tarefa_criada["id"]
-    assert resultado["titulo"] == "Estudar FastAPI"
-    assert resultado["descricao"] == "Criar uma API"
-    assert resultado["concluida"] is False
+    assert resultado.id == tarefa_criada.id
+    assert resultado.titulo == "Estudar FastAPI"
+    assert resultado.descricao == "Criar uma API"
+    assert resultado.concluida is False
 
 def test_atualizar_tarefa_inexistente():
     tarefa_atualizada = TarefaUpdate(
@@ -103,11 +112,11 @@ def test_excluir_tarefa():
 
     tarefa_criada = repository.criar_tarefa(tarefa)
 
-    resultado = repository.excluir_tarefa(tarefa_criada["id"])
+    resultado = repository.excluir_tarefa(tarefa_criada.id)
 
-    assert resultado["id"] == tarefa_criada["id"]
-    assert resultado["titulo"] == "Estudar Python"
-    assert repository.buscar_tarefa(tarefa_criada["id"]) is None
+    assert resultado.id == tarefa_criada.id
+    assert resultado.titulo == "Estudar Python"
+    assert repository.buscar_tarefa(tarefa_criada.id) is None
 
 def test_excluir_tarefa_inexistente():
     resultado = repository.excluir_tarefa(999)

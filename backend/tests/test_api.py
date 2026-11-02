@@ -7,9 +7,16 @@ client = TestClient(app)
 
 @pytest.fixture(autouse=True)
 def limpar_tarefas():
-    from app.repositories.tarefas import tarefas
+    from app.database import SessionLocal
+    from app.models import Tarefa
 
-    tarefas.clear()
+    db = SessionLocal()
+
+    try:
+        db.query(Tarefa).delete()
+        db.commit()
+    finally:
+        db.close()
 
 
 def test_inicio():

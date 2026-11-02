@@ -1,43 +1,81 @@
-# Estrutura temporária para armazenar as tarefas
-tarefas = []
+from app.database import SessionLocal
+from app.models import Tarefa
+
 
 def criar_tarefa(tarefa):
-    nova_tarefa = {
-        "id": max((t["id"] for t in tarefas), default=0) + 1,
-        "titulo": tarefa.titulo,
-        "descricao": tarefa.descricao,
-        "concluida": False
-    }
+    db = SessionLocal()
 
-    tarefas.append(nova_tarefa)
+    try:
+        nova_tarefa = Tarefa(
+            titulo=tarefa.titulo,
+            descricao=tarefa.descricao,
+            concluida=False
+        )
 
-    return nova_tarefa
+        db.add(nova_tarefa)
+        db.commit()
+        db.refresh(nova_tarefa)
+
+        return nova_tarefa
+
+    finally:
+        db.close()
 
 def listar_tarefas():
-    return tarefas
+    db = SessionLocal()
+
+    try:
+        return db.query(Tarefa).all()
+
+    finally:
+        db.close()
 
 def buscar_tarefa(tarefa_id):
-    for tarefa in tarefas:
-        if tarefa["id"] == tarefa_id:
-            return tarefa
+    db = SessionLocal()
 
-    return None
+    try:
+        return db.query(Tarefa).filter(Tarefa.id == tarefa_id).first()
+
+    finally:
+        db.close()
 
 def atualizar_tarefa(tarefa_id, tarefa_atualizada):
-    for indice, tarefa in enumerate(tarefas):
-        if tarefa["id"] == tarefa_id:
-            tarefas[indice] = {
-                **tarefa,
-                **tarefa_atualizada.model_dump()
-            }
+    db = SessionLocal()
 
-            return tarefas[indice]
+    try:
+        tarefa = db.query(Tarefa).filter(
+            Tarefa.id == tarefa_id
+        ).first()
 
-    return None
+        if tarefa is None:
+            return None
+
+        tarefa.titulo = tarefa_atualizada.titulo
+        tarefa.descricao = tarefa_atualizada.descricao
+
+        db.commit()
+        db.refresh(tarefa)
+
+        return tarefa
+
+    finally:
+        db.close()
 
 def excluir_tarefa(tarefa_id):
-    for indice, tarefa in enumerate(tarefas):
-        if tarefa["id"] == tarefa_id:
-            return tarefas.pop(indice)
+    db = SessionLocal()
 
-    return None
+    try:
+        tarefa = db.query(Tarefa).filter(
+            Tarefa.id == tarefa_id
+        ).first()
+
+        if tarefa is None:
+            return None
+
+        db.delete(tarefa)
+        db.commit()
+
+        return tarefa
+
+    finally:
+        db.close()
