@@ -1,13 +1,13 @@
 import pytest
 
 from fastapi.testclient import TestClient
-from main import app
+from backend.main import app
 
 client = TestClient(app)
 
 @pytest.fixture(autouse=True)
 def limpar_tarefas():
-    from main import tarefas
+    from app.repositories.tarefas import tarefas
 
     tarefas.clear()
 
