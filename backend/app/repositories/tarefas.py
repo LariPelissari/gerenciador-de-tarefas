@@ -79,3 +79,24 @@ def excluir_tarefa(tarefa_id):
 
     finally:
         db.close()
+
+def atualizar_status_tarefa(tarefa_id, novo_status):
+    db = SessionLocal()
+
+    try:
+        tarefa = db.query(Tarefa).filter(
+            Tarefa.id == tarefa_id
+        ).first()
+
+        if tarefa is None:
+            return None
+
+        tarefa.concluida = novo_status.concluida
+
+        db.commit()
+        db.refresh(tarefa)
+
+        return tarefa
+
+    finally:
+        db.close()

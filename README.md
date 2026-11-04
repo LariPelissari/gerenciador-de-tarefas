@@ -26,6 +26,7 @@ O projeto permite criar, listar, consultar, atualizar e excluir tarefas, utiliza
 - Validar os dados recebidos com Pydantic.
 - Tratar erros quando uma tarefa não é encontrada.
 - Testar as operações da API com Pytest.
+- Atualizar apenas o status de conclusão de uma tarefa.
 
 
 ## Endpoints
@@ -38,6 +39,7 @@ O projeto permite criar, listar, consultar, atualizar e excluir tarefas, utiliza
 | GET | `/tarefas/{tarefa_id}` | Buscar tarefa pelo ID |
 | PUT | `/tarefas/{tarefa_id}` | Atualizar uma tarefa |
 | DELETE | `/tarefas/{tarefa_id}` | Excluir uma tarefa |
+| PATCH | `/tarefas/{tarefa_id}/status` | Atualizar o status de conclusão da tarefa |
 
 
 ## Instalação e execução
@@ -95,4 +97,4 @@ Para executar todos os testes, utilize:
 python -m pytest -v
 ```
 
-Atualmente, o projeto possui 17 testes automatizados, todos passando.
+Atualmente, o projeto possui 21 testes automatizados, todos passando.

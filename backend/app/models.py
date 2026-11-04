@@ -3,17 +3,16 @@ from sqlalchemy import Column, Integer, String, Boolean
 
 from app.database import Base
 
-
 class TarefaCreate(BaseModel):
     titulo: str
     descricao: str | None = None
-
 
 class TarefaUpdate(BaseModel):
     titulo: str
     descricao: str | None = None
 
-
+class TarefaStatusUpdate(BaseModel):
+    concluida: bool
 
 class Tarefa(Base):
     __tablename__ = "tarefas"

@@ -181,3 +181,42 @@ def test_excluir_tarefa_inexistente():
 
     assert resposta.status_code == 404
     assert resposta.json()["detail"] == "Tarefa não encontrada"
+
+def test_atualizar_status_tarefa():
+    # Criamos uma tarefa
+    criacao = client.post(
+        "/tarefas",
+        json={
+            "titulo": "Estudar Python",
+            "descricao": "Praticar atualização de status"
+        }
+    )
+
+    tarefa_id = criacao.json()["id"]
+
+    # Alteramos o status para concluída
+    resposta = client.patch(
+        f"/tarefas/{tarefa_id}/status",
+        json={
+            "concluida": True
+        }
+    )
+
+    assert resposta.status_code == 200
+
+    dados = resposta.json()
+
+    assert dados["id"] == tarefa_id
+    assert dados["titulo"] == "Estudar Python"
+    assert dados["concluida"] is True
+
+def test_atualizar_status_tarefa_inexistente():
+    resposta = client.patch(
+        "/tarefas/999/status",
+        json={
+            "concluida": True
+        }
+    )
+
+    assert resposta.status_code == 404
+    assert resposta.json()["detail"] == "Tarefa não encontrada"

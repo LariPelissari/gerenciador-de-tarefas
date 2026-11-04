@@ -2,6 +2,7 @@ import pytest
 from app.models import TarefaCreate
 from app.models import TarefaUpdate
 from app.repositories import tarefas as repository
+from app.models import TarefaStatusUpdate
 
 @pytest.fixture(autouse=True)
 def limpar_tarefas():
@@ -120,5 +121,38 @@ def test_excluir_tarefa():
 
 def test_excluir_tarefa_inexistente():
     resultado = repository.excluir_tarefa(999)
+
+    assert resultado is None
+
+
+def test_atualizar_status_tarefa():
+    tarefa = TarefaCreate(
+        titulo="Estudar Python",
+        descricao="Praticar testes"
+    )
+
+    tarefa_criada = repository.criar_tarefa(tarefa)
+
+    novo_status = TarefaStatusUpdate(
+        concluida=True
+    )
+
+    resultado = repository.atualizar_status_tarefa(
+        tarefa_criada.id,
+        novo_status
+    )
+
+    assert resultado.id == tarefa_criada.id
+    assert resultado.concluida is True
+
+def test_atualizar_status_tarefa_inexistente():
+    novo_status = TarefaStatusUpdate(
+        concluida=True
+    )
+
+    resultado = repository.atualizar_status_tarefa(
+        999,
+        novo_status
+    )
 
     assert resultado is None

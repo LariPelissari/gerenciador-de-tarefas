@@ -1,6 +1,10 @@
 from fastapi import APIRouter, HTTPException
 
-from app.models import TarefaCreate, TarefaUpdate
+from app.models import (
+    TarefaCreate,
+    TarefaUpdate,
+    TarefaStatusUpdate
+)
 
 from app.repositories import tarefas as repository
 
@@ -39,6 +43,23 @@ def atualizar_tarefa(tarefa_id: int, tarefa_atualizada: TarefaUpdate):
 
     return tarefa
 
+@router.patch("/{tarefa_id}/status")
+def atualizar_status_tarefa(
+    tarefa_id: int,
+    novo_status: TarefaStatusUpdate
+):
+    tarefa = repository.atualizar_status_tarefa(
+        tarefa_id,
+        novo_status
+    )
+
+    if tarefa is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Tarefa não encontrada"
+        )
+
+    return tarefa
 
 @router.delete("/{tarefa_id}")
 def excluir_tarefa(tarefa_id: int):
