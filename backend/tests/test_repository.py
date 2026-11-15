@@ -50,6 +50,56 @@ def test_listar_tarefas():
     assert resultado[0].titulo == "Estudar Python"
     assert resultado[1].titulo == "Estudar FastAPI"
 
+def test_listar_tarefas_concluidas():
+    tarefa1 = TarefaCreate(
+        titulo="Estudar Python",
+        descricao="Praticar funções"
+    )
+
+    tarefa2 = TarefaCreate(
+        titulo="Estudar FastAPI",
+        descricao="Criar uma API"
+    )
+
+    tarefa_criada1 = repository.criar_tarefa(tarefa1)
+    repository.criar_tarefa(tarefa2)
+
+    repository.atualizar_status_tarefa(
+        tarefa_criada1.id,
+        TarefaStatusUpdate(concluida=True)
+    )
+
+    resultado = repository.listar_tarefas(concluida=True)
+
+    assert len(resultado) == 1
+    assert resultado[0].titulo == "Estudar Python"
+    assert resultado[0].concluida is True
+
+def test_listar_tarefas_pendentes():
+    tarefa1 = TarefaCreate(
+        titulo="Estudar Python",
+        descricao="Praticar funções"
+    )
+
+    tarefa2 = TarefaCreate(
+        titulo="Estudar FastAPI",
+        descricao="Criar uma API"
+    )
+
+    tarefa_criada1 = repository.criar_tarefa(tarefa1)
+    repository.criar_tarefa(tarefa2)
+
+    repository.atualizar_status_tarefa(
+        tarefa_criada1.id,
+        TarefaStatusUpdate(concluida=True)
+    )
+
+    resultado = repository.listar_tarefas(concluida=False)
+
+    assert len(resultado) == 1
+    assert resultado[0].titulo == "Estudar FastAPI"
+    assert resultado[0].concluida is False
+
 def test_buscar_tarefa():
     tarefa = TarefaCreate(
         titulo="Estudar FastAPI",

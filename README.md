@@ -27,6 +27,7 @@ O projeto permite criar, listar, consultar, atualizar e excluir tarefas, utiliza
 - Tratar erros quando uma tarefa não é encontrada.
 - Testar as operações da API com Pytest.
 - Atualizar apenas o status de conclusão de uma tarefa.
+- Filtrar tarefas por status de conclusão (concluídas ou pendentes).
 
 
 ## Endpoints
@@ -35,7 +36,7 @@ O projeto permite criar, listar, consultar, atualizar e excluir tarefas, utiliza
 |---|---|---|
 | GET | `/` | Mensagem inicial da API |
 | POST | `/tarefas/` | Criar uma tarefa |
-| GET | `/tarefas/` | Listar todas as tarefas |
+| GET | `/tarefas/` | Listar todas as tarefas ou filtrar por status de conclusão |
 | GET | `/tarefas/{tarefa_id}` | Buscar tarefa pelo ID |
 | PUT | `/tarefas/{tarefa_id}` | Atualizar uma tarefa |
 | DELETE | `/tarefas/{tarefa_id}` | Excluir uma tarefa |
@@ -97,4 +98,4 @@ Para executar todos os testes, utilize:
 python -m pytest -v
 ```
 
-Atualmente, o projeto possui 21 testes automatizados, todos passando.
+Atualmente, o projeto possui 25 testes automatizados, todos passando.

@@ -68,6 +68,74 @@ def test_listar_tarefas():
     assert dados[0]["titulo"] == "Estudar pytest"
     assert dados[0]["descricao"] == "Testar listagem de tarefas"
 
+def test_listar_tarefas_concluidas():
+    criacao1 = client.post(
+        "/tarefas",
+        json={
+            "titulo": "Estudar Python",
+            "descricao": "Praticar funções"
+            }
+        )
+
+    criacao2 = client.post(
+        "/tarefas",
+        json={
+            "titulo": "Estudar FastAPI",
+            "descricao": "Criar uma API"
+        }
+    )
+
+    tarefa_id = criacao1.json()["id"]
+
+    client.patch(
+        f"/tarefas/{tarefa_id}/status",
+        json={"concluida": True}
+    )
+
+    resposta = client.get("/tarefas/?concluida=true")
+
+    assert resposta.status_code == 200
+
+    dados = resposta.json()
+
+    assert len(dados) == 1
+    assert dados[0]["titulo"] == "Estudar Python"
+    assert dados[0]["concluida"] is True
+
+def test_listar_tarefas_pendentes():
+    criacao1 = client.post(
+        "/tarefas",
+        json={
+            "titulo": "Estudar Python",
+            "descricao": "Praticar funções"
+        }
+    )
+
+    criacao2 = client.post(
+        "/tarefas",
+        json={
+            "titulo": "Estudar FastAPI",
+            "descricao": "Criar uma API"
+        }
+    )
+
+    tarefa_id = criacao1.json()["id"]
+
+    client.patch(
+        f"/tarefas/{tarefa_id}/status",
+        json={"concluida": True}
+    )
+
+    resposta = client.get("/tarefas/?concluida=false")
+
+    assert resposta.status_code == 200
+
+    dados = resposta.json()
+
+    assert len(dados) == 1
+    assert dados[0]["titulo"] == "Estudar FastAPI"
+    assert dados[0]["concluida"] is False
+
 def test_buscar_tarefa():
     # Criamos uma tarefa para consultar
     client.post(

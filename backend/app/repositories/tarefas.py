@@ -21,11 +21,18 @@ def criar_tarefa(tarefa):
     finally:
         db.close()
 
-def listar_tarefas():
+def listar_tarefas(concluida=None):
     db = SessionLocal()
 
     try:
-        return db.query(Tarefa).all()
+        consulta = db.query(Tarefa)
+
+        if concluida is not None:
+            consulta = consulta.filter(
+                Tarefa.concluida == concluida
+            )
+
+        return consulta.all()
 
     finally:
         db.close()

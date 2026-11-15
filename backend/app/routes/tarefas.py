@@ -20,8 +20,8 @@ def criar_tarefa(tarefa: TarefaCreate):
 
 
 @router.get("/")
-def listar_tarefas():
-    return repository.listar_tarefas()
+def listar_tarefas(concluida: bool | None = None):
+    return repository.listar_tarefas(concluida)
 
 
 @router.get("/{tarefa_id}")
